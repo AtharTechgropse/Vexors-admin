@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Bot, Users, UsersRound } from "lucide-react";
 import {
   AreaChart,
@@ -12,6 +12,7 @@ import {
 } from "recharts";
 import Sidebar from "../common/Sidebar";
 import Header from "../common/Header";
+import { GetDashboardStats } from "../../apiServices/UserHttpService/UserMainHttp";
 
 const performanceData = [
   { date: "Jan", 2023: 100, 2024: 300 },
@@ -29,6 +30,23 @@ const performanceData = [
 ];
 
 const Dashboard = () => {
+  const [adminStats, setAdminStats] = useState();
+
+  useEffect(() => {
+    GetApiData();
+  }, []);
+
+  const GetApiData = async (type) => {
+    try {
+      const { data, error } = await GetDashboardStats();
+      if (!error && data?.results) {
+        setAdminStats(data.results);
+      }
+    } catch (error) {
+      console.error("Error fetching users:", error);
+    }
+  };
+
   return (
     <div>
       <Header />
@@ -42,7 +60,9 @@ const Dashboard = () => {
                   <div className="comman-card-body">
                     <div className="d-flex justify-content-between">
                       <div className="">
-                        <h1 className="card-heading-bold text-white">150</h1>
+                        <h1 className="card-heading-bold text-white">
+                          {adminStats?.totalUsers}
+                        </h1>
                         <p className="m-0 text-white fw-medium">Total Users</p>
                       </div>
                       <div className="dash-card-icon">
@@ -57,7 +77,9 @@ const Dashboard = () => {
                   <div className="comman-card-body">
                     <div className="d-flex justify-content-between">
                       <div className="">
-                        <h1 className="card-heading-bold text-white">44</h1>
+                        <h1 className="card-heading-bold text-white">
+                          {adminStats?.totalSubUsers}
+                        </h1>
                         <p className="m-0 text-white fw-medium">
                           Total Sub-Users
                         </p>
@@ -74,7 +96,9 @@ const Dashboard = () => {
                   <div className="comman-card-body">
                     <div className="d-flex justify-content-between">
                       <div className="">
-                        <h1 className="card-heading-bold text-white">65</h1>
+                        <h1 className="card-heading-bold text-white">
+                          {adminStats?.totalVendors}
+                        </h1>
                         <p className="m-0 text-white fw-medium">
                           Total Vendors
                         </p>
@@ -91,7 +115,9 @@ const Dashboard = () => {
                   <div className="comman-card-body">
                     <div className="d-flex justify-content-between">
                       <div className="">
-                        <h1 className="card-heading-bold text-white">65</h1>
+                        <h1 className="card-heading-bold text-white">
+                          {adminStats?.totalSubVendors}
+                        </h1>
                         <p className="m-0 text-white fw-medium">
                           Total Sub-Vendors
                         </p>
@@ -108,7 +134,9 @@ const Dashboard = () => {
                   <div className="comman-card-body">
                     <div className="d-flex justify-content-between">
                       <div className="">
-                        <h1 className="card-heading-bold text-white">102</h1>
+                        <h1 className="card-heading-bold text-white">
+                          {adminStats?.totalRFPs}
+                        </h1>
                         <p className="m-0 text-white fw-medium">
                           Total RFPs/RFQs
                         </p>
@@ -125,7 +153,9 @@ const Dashboard = () => {
                   <div className="comman-card-body">
                     <div className="d-flex justify-content-between">
                       <div className="">
-                        <h1 className="card-heading-bold text-white">102</h1>
+                        <h1 className="card-heading-bold text-white">
+                          {adminStats?.totalRevenue}
+                        </h1>
                         <p className="m-0 text-white fw-medium">
                           Total Revenue
                         </p>

@@ -1540,3 +1540,44 @@ input.otp-field__input.form {
 .tab-item:hover {
   background-color: #f0f0f0;
 }
+
+.profile-img-container {
+  position: relative;
+  display: inline-block;
+}
+
+.profile-img-wrapper {
+  position: relative;
+  display: inline-block;
+  cursor: pointer;
+}
+
+.profile-img {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.upload-icon {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+  background: rgba(0, 0, 0, 0.5);
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 20px;
+}
+
+.profile-img-wrapper:hover .upload-icon {
+  opacity: 1;
+}

@@ -117,6 +117,25 @@ export async function UserResetPass(formData) {
   }
 }
 
+export async function UserEditProfile(formData) {
+  try {
+    const { data } = await httpService.put(
+      `${process.env.REACT_APP_APIENDPOINT}auth/resetPasswordAdmin`,
+      formData
+    );
+    if (!data.error) {
+      toast.success(data.message);
+    } else {
+      toast.error(data.message, { autoClose: 1500 });
+    }
+
+    return { data };
+  } catch (error) {
+    handleError(error, "Failed to update password");
+    return { error };
+  }
+}
+
 export async function changePasswordpart(formData) {
   try {
     const { data } = await httpService.patch(

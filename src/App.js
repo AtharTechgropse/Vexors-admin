@@ -11,9 +11,10 @@ import AddSubUser from "./WebComponents/UserPanel/PeopleManage/AddSubUser.jsx";
 import PushNotify from "./WebComponents/UserPanel/PeopleManage/PushNotify.jsx";
 import CategoryManage from "./WebComponents/UserPanel/CategoryManagement/CategoryManage.jsx";
 import ProductManage from "./WebComponents/UserPanel/ProductManagement/ProductManage.jsx";
+import EditProfile from "./WebComponents/UserPanel/EditProfile.jsx";
+import AddSubAdmin from "./WebComponents/UserPanel/PeopleManage/AddSubAdmin.jsx";
 
 const Login = lazy(() => import("./WebComponents/Auths/Login.jsx"));
-const SignUp = lazy(() => import("./WebComponents/Auths/SignUp.jsx"));
 const Forgot = lazy(() => import("./WebComponents/Auths/ForgotPassword.jsx"));
 const Verify = lazy(() => import("./WebComponents/Auths/OTPVerify.jsx"));
 const Reset = lazy(() => import("./WebComponents/Auths/ResetPassword.jsx"));
@@ -41,13 +42,12 @@ function App() {
             style={{ height: "100vh" }}
             className="d-flex justify-content-center align-items-center h-100vh"
           >
-            <div className="logo">
-              <img alt="" src="/resources/imgs/navLogo.svg" />
-            </div>
+            {/* <div className="logo">
+              <img alt="" src="res/assets/imgs/navLogo.svg" />
+            </div> */}
           </div>
         }
       >
-        {/* <AnimatedBackground animationName="neonPulse" blendMode="screen" /> */}
 
         <ToastContainer
           position="bottom-right"
@@ -66,13 +66,13 @@ function App() {
 
           <Routes>
             <Route path="/login" element={<Login />} />
-            <Route path="/SignUp" element={<SignUp />} />
             <Route path="/Forgot-password" element={<Forgot />} />
             <Route path="/VerifyOtp" element={<Verify />} />
             <Route path="/ResetPass" element={<Reset />} />
 
             {/* Dash */}
             <Route path="/" element={<Dashboard />} />
+            <Route path="/Profile" element={<EditProfile />} />
             <Route path="/Users" element={<UserManage />} />
             <Route path="/vendor_management" element={<StaffManage />} />
             <Route path="/Query" element={<QueryManage />} />
@@ -81,6 +81,7 @@ function App() {
             <Route path="/product_management" element={<ProductManage />} />
             <Route path="/Users/View-User/:id" element={<ViewUserDetails />} />
             <Route path="/Users/Add-SubUsers" element={<AddSubUser />} />
+            <Route path="/Users/Add-SubAdmin" element={<AddSubAdmin />} />
           </Routes>
         </RecoilRoot>
       </Suspense>

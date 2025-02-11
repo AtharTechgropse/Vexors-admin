@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import {
+  ChangeUserStatus,
   DeleteUser,
   GetAllUsers,
   UpdateUserStatus,
@@ -39,7 +40,7 @@ const StaffManage = () => {
       start_date: startDate,
       end_date: endDate,
       // activeStatus: type ?? userType,
-      type: "sub-user",
+      type: "Sub Admin",
     };
 
     setLoading(true);
@@ -68,19 +69,31 @@ const StaffManage = () => {
     }
   };
 
+  const toggleUserStatus = async (userId, currentStatus) => {
+    // const newStatus = currentStatus === "Enabled" ? "Approved" : "Declines";
+    try {
+      const { data, error } = await ChangeUserStatus(userId, {
+        activeStatus: currentStatus,
+      });
+      if (!error && data?.results) {
+        GetApiData();
+      }
+    } catch (error) {
+      console.error("Error updating status:", error);
+    }
+  };
+
   const handleDateFilter = () => {
     setCurrentPage(1);
     GetApiData();
   };
 
   const handleDeleteUser = async (userId) => {
-    if (window.confirm("Are you sure you want to delete this user?")) {
-      try {
-        await DeleteUser(userId);
-        GetApiData();
-      } catch (error) {
-        console.error("Error deleting user:", error);
-      }
+    try {
+      await DeleteUser(userId);
+      GetApiData();
+    } catch (error) {
+      console.error("Error deleting user:", error);
     }
   };
 
@@ -177,13 +190,12 @@ const StaffManage = () => {
                   <i className="fa fa-search search-icon" />
                 </div>
 
-                <Link to="/Users/Add-SubUsers"  class="comman-border-btn">
+                <Link to="/Users/Add-SubAdmin" class="comman-border-btn">
                   <div class="d-flex gap-2 align-items-center">
                     <i class="fa-solid fa-plus"></i>
                     Create new
                   </div>
                 </Link>
-
 
                 <div class="col-auto">
                   <div class="dropdown">
@@ -280,8 +292,7 @@ const StaffManage = () => {
                       <tr>
                         <th>Sr.No.</th>
                         <th>Image</th>
-                        <th>Name</th>
-                        <th>Business Name</th>
+                        <th>Email</th>
                         <th>Created At</th>
                         <th>Status</th>
                         <th>Action</th>
@@ -300,8 +311,7 @@ const StaffManage = () => {
                               )}
                             </div>
                           </td>
-                          <td>{user.fullName}</td>
-                          <td>{user.businessName}</td>
+                          <td>{user.email}</td>
                           <td>
                             {new Date(user.createdAt).toLocaleDateString()}
                           </td>
@@ -358,16 +368,38 @@ const StaffManage = () => {
                                 <li>
                                   <button
                                     className="dropdown-item"
+                                    onClick={() =>
+                                      toggleUserStatus(user?._id, user?.status)
+                                    }
+                                  >
+                                    {user?.status ? (
+                                      <>
+                                        <i className="fa-solid fa-toggle-off pe-2 text-muted" size={40} />
+                                        Disable
+                                      </>
+                                    ) : (
+                                      <>
+                                        <i className="fa-solid fa-toggle-on pe-2 text-success" />
+                                        Enable
+                                      </>
+                                    )}
+                                  </button>
+                                </li>
+
+                                <li>
+                                  <button
+                                    className="dropdown-item"
                                     onClick={() => setSelectedUser(user)}
                                   >
                                     <i className="fa-solid fa-desktop pe-2" />{" "}
                                     View
                                   </button>
                                 </li>
+
                                 <li>
                                   <button
                                     className="dropdown-item text-danger"
-                                    onClick={() => handleDeleteUser(user.id)}
+                                    onClick={() => handleDeleteUser(user._id)}
                                   >
                                     <i className="fa-solid fa-trash pe-2 text-danger" />{" "}
                                     Delete

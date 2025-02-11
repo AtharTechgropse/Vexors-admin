@@ -23,7 +23,6 @@ const Sidebar = () => {
       key: "people",
       icon: "fa-solid fa-user-cog",
       href: "/Users",
-      href2: "/vendor_management",
       children: [
         {
           name: "User's Management",
@@ -124,7 +123,12 @@ const Sidebar = () => {
         {sidebarNav?.map((item) => (
           <li
             key={item.name}
-            className={location.pathname === item?.href || item?.href2 ? "active" : ""}
+            className={
+              location.pathname === item?.href ||
+              item?.children?.some((child) => child.href === location.pathname)
+                ? "active"
+                : ""
+            }
           >
             {item.children ? (
               <div

@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { getAdminData } from "../../apiServices/UserHttpService/UserMainHttp";
+import { useNavigate } from "react-router-dom";
 
 const Header = () => {
   const [adminData, setAdminData] = useState([]);
-
+  const navigate = useNavigate();
   useEffect(() => {
     GetApiData();
   }, []);
@@ -34,7 +35,7 @@ const Header = () => {
           </div>
           <div class="w-82">
             <div class="d-flex justify-content-end position-relative">
-              <a href="profile.html">
+              <a  onClick={() => navigate("/Profile")}>
                 <div class="profile mt-3">
                   <div class="user mt-3">
                     <h3>{adminData?.fullName} </h3>

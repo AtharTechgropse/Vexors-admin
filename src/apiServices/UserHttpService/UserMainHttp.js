@@ -30,7 +30,7 @@ export async function getAdminData() {
     }
     return { data };
   } catch (error) {
-    handleError(error, "Failed to log in");
+    handleError(error, "Internal error");
     return { error };
   }
 }
@@ -47,11 +47,10 @@ export async function GetAllUsers(formData) {
     }
     return { data };
   } catch (error) {
-    handleError(error, "Failed to log in");
+    handleError(error, "Internal error");
     return { error };
   }
 }
-
 
 export async function AddSubUser(formData) {
   try {
@@ -65,7 +64,7 @@ export async function AddSubUser(formData) {
     }
     return { data };
   } catch (error) {
-    handleError(error, "Failed to log in");
+    handleError(error, "Internal error");
     return { error };
   }
 }
@@ -98,15 +97,14 @@ export async function UpdateUserStatus(id, formData) {
     }
     return { data };
   } catch (error) {
-    handleError(error, "Failed to log in");
+    handleError(error, "Internal error");
     return { error };
   }
 }
-
-export async function DeleteUser(formData) {
+export async function ChangeUserStatus(id, formData) {
   try {
-    const { data } = await httpService.post(
-      `${process.env.REACT_APP_APIENDPOINT}api/createAssistant`,
+    const { data } = await httpService.get(
+      `${process.env.REACT_APP_APIENDPOINT}user/statusChange/${id}`,
       formData
     );
     if (!data.error) {
@@ -116,7 +114,57 @@ export async function DeleteUser(formData) {
     }
     return { data };
   } catch (error) {
-    handleError(error, "Failed to log in");
+    handleError(error, "Internal error");
+    return { error };
+  }
+}
+
+export async function DeleteUser(id) {
+  try {
+    const { data } = await httpService.post(
+      `${process.env.REACT_APP_APIENDPOINT}api/deleteUser/${id}`
+    );
+    if (!data.error) {
+      toast.success(data.message, { autoClose: 1500 });
+    } else {
+      toast.error(data.message);
+    }
+    return { data };
+  } catch (error) {
+    handleError(error, "Failed to Delete!");
+    return { error };
+  }
+}
+export async function GetDashboardStats(id) {
+  try {
+    const { data } = await httpService.get(
+      `${process.env.REACT_APP_APIENDPOINT}analytics/getDashboardCounts`
+    );
+    if (!data.error) {
+    } else {
+      toast.error(data.message);
+    }
+    return { data };
+  } catch (error) {
+    handleError(error, "Server Error.Try Again!");
+    return { error };
+  }
+}
+
+export async function CreateSubAdmin(formData) {
+  try {
+    const { data } = await httpService.post(
+      `${process.env.REACT_APP_APIENDPOINT}user/createSubAdmin`,
+      formData
+    );
+    if (!data.error) {
+      toast.success(data.message, { autoClose: 1500 });
+    } else {
+      toast.error(data.message);
+    }
+    return { data };
+  } catch (error) {
+    handleError(error, "Internal error");
     return { error };
   }
 }

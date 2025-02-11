@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import {
+  ChangeUserStatus,
   DeleteUser,
   GetAllUsers,
   UpdateUserStatus,
@@ -104,6 +105,20 @@ const UserManage = () => {
       console.error("Error updating status:", error);
     }
   };
+  
+  const toggleUserStatus = async (userId, currentStatus) => {
+      // const newStatus = currentStatus === "Enabled" ? "Approved" : "Declines";
+      try {
+        const { data, error } = await ChangeUserStatus(userId, {
+          activeStatus: currentStatus,
+        });
+        if (!error && data?.results) {
+          GetApiData();
+        }
+      } catch (error) {
+        console.error("Error updating status:", error);
+      }
+    };
 
   const Pagination = () => (
     <nav aria-label="Page navigation" className="mt-3 mb-3">
@@ -309,6 +324,27 @@ const UserManage = () => {
                                   </>
                                 )}
 
+<li>
+                                  <button
+                                    className="dropdown-item"
+                                    onClick={() =>
+                                      toggleUserStatus(user?._id, user?.status)
+                                    }
+                                  >
+                                    {user?.status ? (
+                                      <>
+                                        <i className="fa-solid fa-toggle-off pe-2 text-muted" size={40} />
+                                        Disable
+                                      </>
+                                    ) : (
+                                      <>
+                                        <i className="fa-solid fa-toggle-on pe-2 text-success" />
+                                        Enable
+                                      </>
+                                    )}
+                                  </button>
+                                </li>
+                                
                                 <li>
                                   <Link
                                     className="dropdown-item"

@@ -25,7 +25,7 @@ const UserManage = () => {
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [selectedUser, setSelectedUser] = useState(null);
-  const [loading, setLoading] = useState(false); 
+  const [loading, setLoading] = useState(false);
   const perPage = 10;
   const [userType, setUserType] = useState("Approved");
   useEffect(() => {
@@ -42,7 +42,7 @@ const UserManage = () => {
       activeStatus: type ?? userType,
     };
 
-    setLoading(true); 
+    setLoading(true);
 
     try {
       const { data, error } = await GetAllUsers(payload);
@@ -53,7 +53,7 @@ const UserManage = () => {
     } catch (error) {
       console.error("Error fetching users:", error);
     } finally {
-      setLoading(false); 
+      setLoading(false);
     }
   };
 
@@ -74,13 +74,11 @@ const UserManage = () => {
   };
 
   const handleDeleteUser = async (userId) => {
-    if (window.confirm("Are you sure you want to delete this user?")) {
-      try {
-        await DeleteUser(userId);
-        GetApiData();
-      } catch (error) {
-        console.error("Error deleting user:", error);
-      }
+    try {
+      await DeleteUser(userId);
+      GetApiData();
+    } catch (error) {
+      console.error("Error deleting user:", error);
     }
   };
 
@@ -105,20 +103,20 @@ const UserManage = () => {
       console.error("Error updating status:", error);
     }
   };
-  
+
   const toggleUserStatus = async (userId, currentStatus) => {
-      // const newStatus = currentStatus === "Enabled" ? "Approved" : "Declines";
-      try {
-        const { data, error } = await ChangeUserStatus(userId, {
-          activeStatus: currentStatus,
-        });
-        if (!error && data?.results) {
-          GetApiData();
-        }
-      } catch (error) {
-        console.error("Error updating status:", error);
+    // const newStatus = currentStatus === "Enabled" ? "Approved" : "Declines";
+    try {
+      const { data, error } = await ChangeUserStatus(userId, {
+        activeStatus: currentStatus,
+      });
+      if (!error && data?.results) {
+        GetApiData();
       }
-    };
+    } catch (error) {
+      console.error("Error updating status:", error);
+    }
+  };
 
   const Pagination = () => (
     <nav aria-label="Page navigation" className="mt-3 mb-3">
@@ -324,7 +322,7 @@ const UserManage = () => {
                                   </>
                                 )}
 
-<li>
+                                <li>
                                   <button
                                     className="dropdown-item"
                                     onClick={() =>
@@ -333,7 +331,10 @@ const UserManage = () => {
                                   >
                                     {user?.status ? (
                                       <>
-                                        <i className="fa-solid fa-toggle-off pe-2 text-muted" size={40} />
+                                        <i
+                                          className="fa-solid fa-toggle-off pe-2 text-muted"
+                                          size={40}
+                                        />
                                         Disable
                                       </>
                                     ) : (
@@ -344,7 +345,7 @@ const UserManage = () => {
                                     )}
                                   </button>
                                 </li>
-                                
+
                                 <li>
                                   <Link
                                     className="dropdown-item"
@@ -357,7 +358,7 @@ const UserManage = () => {
                                 <li>
                                   <button
                                     className="dropdown-item text-danger"
-                                    onClick={() => handleDeleteUser(user.id)}
+                                    onClick={() => handleDeleteUser(user._id)}
                                   >
                                     <i className="fa-solid fa-trash pe-2 text-danger" />{" "}
                                     Delete

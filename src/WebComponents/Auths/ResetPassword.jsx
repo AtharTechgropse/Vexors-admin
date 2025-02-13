@@ -62,6 +62,18 @@ function ResetPassword() {
     }
   };
 
+  function togglePassword() {
+    var x = document.getElementById("password-input");
+    var y = document.getElementById("password-input2");
+    if (x.type === "password" && y.type === "password") {
+      x.type = "text";
+      y.type = "text";
+    } else {
+      x.type = "password";
+      y.type = "password";
+    }
+  }
+
   return (
     <div className="centerd-body bg-light">
       <div className="container">
@@ -99,6 +111,7 @@ function ResetPassword() {
                                 ? "error-boundary animate__animated animate__headShake"
                                 : ""
                             }`}
+                            id="password-input"
                             placeholder="Enter new password"
                             {...register("password", {
                               required: "Password is required!",
@@ -129,6 +142,7 @@ function ResetPassword() {
                           </label>
                           <input
                             type="password"
+                            id="password-input2"
                             className={`form-control ${
                               confirmPasswordError || errors.confirmPassword
                                 ? "error-boundary animate__animated animate__headShake"
@@ -149,6 +163,22 @@ function ResetPassword() {
                               *{confirmPasswordError}
                             </p>
                           )}
+                        </div>
+
+                        <div className="mt-2 mb-1 text-center">
+                          <input
+                            style={{
+                              width: "14px",
+                              height: "14px",
+                              marginRight: "4px",
+                              position: "relative",
+                              top: "2px",
+                            }}
+                            type="checkbox"
+                            onClick={togglePassword}
+                            className="showPassCheck"
+                          />
+                          <small className="showPass">Show Password</small>
                         </div>
 
                         <div className="form-group mt-4">

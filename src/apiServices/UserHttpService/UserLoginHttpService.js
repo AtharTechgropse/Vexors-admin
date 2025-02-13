@@ -22,7 +22,7 @@ function handleError(error, customMessage = "An unexpected error occurred") {
 
 export async function UserLogin(formData) {
   try {
-    const { data } = await httpService.put(
+    const { data, error } = await httpService.put(
       `${process.env.REACT_APP_APIENDPOINT}auth/adminLogin`,
       formData
     );
@@ -34,7 +34,7 @@ export async function UserLogin(formData) {
     } else {
       toast.error(data.message);
     }
-    return { data };
+    return { data, error };
   } catch (error) {
     handleError(error, "Failed to log in");
     return { error };
@@ -63,7 +63,7 @@ export async function UserSignUp(formData) {
 
 export async function UserforgotPassword(formData) {
   try {
-    const { data } = await httpService.put(
+    const { data, error } = await httpService.put(
       `${process.env.REACT_APP_APIENDPOINT}auth/adminForgetPassword`,
       formData
     );
@@ -72,7 +72,7 @@ export async function UserforgotPassword(formData) {
     } else {
       toast.error(data.message, { autoClose: 1500 });
     }
-    return { data };
+    return { data, error };
   } catch (error) {
     handleError(error, "Failed to process forgot password request");
     return { error };
@@ -81,7 +81,7 @@ export async function UserforgotPassword(formData) {
 
 export async function verifyOTP(formData) {
   try {
-    const { data } = await httpService.put(
+    const { data, error } = await httpService.put(
       `${process.env.REACT_APP_APIENDPOINT}auth/adminVerifyOtp`,
       formData
     );
@@ -91,7 +91,7 @@ export async function verifyOTP(formData) {
       toast.error(data.message, { autoClose: 1500 });
     }
 
-    return { data };
+    return { data, error };
   } catch (error) {
     handleError(error, "Failed to verify OTP");
     return { error };
@@ -100,7 +100,7 @@ export async function verifyOTP(formData) {
 
 export async function UserResetPass(formData) {
   try {
-    const { data } = await httpService.put(
+    const { data, error } = await httpService.put(
       `${process.env.REACT_APP_APIENDPOINT}auth/resetPasswordAdmin`,
       formData
     );
@@ -110,7 +110,7 @@ export async function UserResetPass(formData) {
       toast.error(data.message, { autoClose: 1500 });
     }
 
-    return { data };
+    return { data, error };
   } catch (error) {
     handleError(error, "Failed to update password");
     return { error };
@@ -119,8 +119,8 @@ export async function UserResetPass(formData) {
 
 export async function UserEditProfile(formData) {
   try {
-    const { data } = await httpService.put(
-      `${process.env.REACT_APP_APIENDPOINT}auth/resetPasswordAdmin`,
+    const { data, error } = await httpService.patch(
+      `${process.env.REACT_APP_APIENDPOINT}auth/editAdminProfile`,
       formData
     );
     if (!data.error) {
@@ -129,20 +129,19 @@ export async function UserEditProfile(formData) {
       toast.error(data.message, { autoClose: 1500 });
     }
 
-    return { data };
+    return { data, error };
   } catch (error) {
-    handleError(error, "Failed to update password");
+    handleError(error, "Server Error!");
     return { error };
   }
 }
 
-export async function changePasswordpart(formData) {
+export async function changePasswordAdmin(formData) {
   try {
-    const { data } = await httpService.patch(
-      `${process.env.REACT_APP_APIENDPOINT}api/partner/changePassword`,
+    const { data, error } = await httpService.patch(
+      `${process.env.REACT_APP_APIENDPOINT}auth/AdminChangePassword`,
       formData
     );
-    console.log(data);
 
     if (!data.error) {
       toast.success(data.message);
@@ -150,7 +149,7 @@ export async function changePasswordpart(formData) {
       toast.error(data.message, { autoClose: 1500 });
     }
 
-    return { data };
+    return { data, error };
   } catch (error) {
     handleError(error, "Failed to change password");
     return { error };

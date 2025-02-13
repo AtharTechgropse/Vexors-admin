@@ -58,7 +58,7 @@ const ViewUserDetails = () => {
                     </a>
                   </div>
                   <div className="d-flex gap-2">
-                    <a  className="comman-border-btn">
+                    <a className="comman-border-btn">
                       <div
                         onClick={() => navigate(-1)}
                         className="d-flex gap-2 align-items-center"
@@ -139,7 +139,13 @@ const ViewUserDetails = () => {
                       <div className="row">
                         <div className="col-auto">
                           <div className="user-view-img2 overflow-hidden">
-                            <img src="assets/img/user/user-3.png" alt="" />
+                            <img
+                              src={
+                                user?.profileImage ??
+                                "assets/img/user/user-3.png"
+                              }
+                              alt=""
+                            />
                           </div>
                         </div>
                         <div className="col">
@@ -188,7 +194,9 @@ const ViewUserDetails = () => {
                                 </span>
                                 Date of Birth
                               </p>
-                              <p className="fs-6 text-dark-light">02-11-2024</p>
+                              <p className="fs-6 text-dark-light">
+                                {user?.dob?.slice(0, 10)}
+                              </p>
                             </div>
                             <div className="col-md-4">
                               <p className="m-0 fs-6 text-dark-light fw-medium">
@@ -198,7 +206,9 @@ const ViewUserDetails = () => {
                                 </span>
                                 Gender
                               </p>
-                              <p className="fs-6 text-dark-light">Male</p>
+                              <p className="fs-6 text-dark-light">
+                                {user?.gender}
+                              </p>
                             </div>
                           </div>
                         </div>

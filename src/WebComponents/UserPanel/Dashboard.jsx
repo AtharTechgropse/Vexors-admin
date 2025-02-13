@@ -12,7 +12,10 @@ import {
 } from "recharts";
 import Sidebar from "../common/Sidebar";
 import Header from "../common/Header";
-import { GetDashboardStats } from "../../apiServices/UserHttpService/UserMainHttp";
+import {
+  GetAllUsers,
+  GetDashboardStats,
+} from "../../apiServices/UserHttpService/UserMainHttp";
 
 const performanceData = [
   { date: "Jan", 2023: 100, 2024: 300 },
@@ -31,9 +34,13 @@ const performanceData = [
 
 const Dashboard = () => {
   const [adminStats, setAdminStats] = useState();
+  const [usersListing, setUsersListing] = useState();
+  const [staffListing, setStaffListing] = useState();
 
   useEffect(() => {
     GetApiData();
+    GetApiData2();
+    GetApiData3();
   }, []);
 
   const GetApiData = async (type) => {
@@ -41,6 +48,39 @@ const Dashboard = () => {
       const { data, error } = await GetDashboardStats();
       if (!error && data?.results) {
         setAdminStats(data.results);
+      }
+    } catch (error) {
+      console.error("Error fetching users:", error);
+    }
+  };
+
+  const GetApiData2 = async (type) => {
+    let payload = {
+      page: 1,
+      per_page: 8,
+      activeStatus: "Approved",
+    };
+
+    try {
+      const { data, error } = await GetAllUsers(payload);
+      if (!error && data?.results) {
+        setUsersListing(data.results.user);
+      }
+    } catch (error) {
+      console.error("Error fetching users:", error);
+    }
+  };
+  const GetApiData3 = async (type) => {
+    let payload = {
+      page: 1,
+      per_page: 8,
+      type: "Sub Admin",
+    };
+
+    try {
+      const { data, error } = await GetAllUsers(payload);
+      if (!error && data?.results) {
+        setStaffListing(data.results.user);
       }
     } catch (error) {
       console.error("Error fetching users:", error);
@@ -321,114 +361,35 @@ const Dashboard = () => {
                     <h2 className="comman-card-heading">Recent Users</h2>
                   </div>
                   <div className="comman-card-body">
-                    <div className="d-flex gap-3 my-2 align-items-center">
-                      <div className="dash-product-img">
-                        <img src="res/assets/img/user/user-3.png" alt="" />
-                      </div>
-                      <div className="d-flex justify-content-between w-100">
-                        <div className="">
-                          <p className="m-0 comman-sm-text fw-medium">
-                            Jhon Doe
-                          </p>
-                          <p className="m-0 comman-text-xs fw-light">
-                            20-20-2024
+                    {usersListing?.map((itm, ids) => (
+                      <div className="d-flex gap-3 my-2 align-items-center">
+                        <div className="dash-product-img">
+                          <img
+                            src={
+                              itm?.profileImage?.length > 0
+                                ? itm?.profileImage
+                                : "res/assets/img/user/user-3.png"
+                            }
+                            alt=""
+                          />
+                        </div>
+                        <div className="d-flex justify-content-between w-100">
+                          <div className="">
+                            <p className="m-0 comman-sm-text fw-medium">
+                              {itm?.fullName ?? "NA"}
+                            </p>
+                            <p className="m-0 comman-text-xs fw-light">
+                              {itm?.createdAt
+                                ?.slice(0, 10)
+                                ?.replaceAll("-", "/")}
+                            </p>
+                          </div>
+                          <p className="comman-sm-text fw-semibold">
+                            {itm?.email}
                           </p>
                         </div>
-                        <p className="comman-sm-text fw-semibold">
-                          jhondoe@gmail.com
-                        </p>
                       </div>
-                    </div>
-                    <div className="d-flex gap-3 my-2 align-items-center">
-                      <div className="dash-product-img">
-                        <img src="res/assets/img/user/user9.jpg" alt="" />
-                      </div>
-                      <div className="d-flex justify-content-between w-100">
-                        <div className="">
-                          <p className="m-0 comman-sm-text fw-medium">
-                            Peter Doe
-                          </p>
-                          <p className="m-0 comman-text-xs fw-light">
-                            20-20-2024
-                          </p>
-                        </div>
-                        <p className="comman-sm-text fw-semibold">
-                          Peter@gmail.com
-                        </p>
-                      </div>
-                    </div>
-                    <div className="d-flex gap-3 my-2 align-items-center">
-                      <div className="dash-product-img">
-                        <img src="res/assets/img/user/user-3.png" alt="" />
-                      </div>
-                      <div className="d-flex justify-content-between w-100">
-                        <div className="">
-                          <p className="m-0 comman-sm-text fw-medium">
-                            Peter Doe
-                          </p>
-                          <p className="m-0 comman-text-xs fw-light">
-                            20-20-2024
-                          </p>
-                        </div>
-                        <p className="comman-sm-text fw-semibold">
-                          Peter@gmail.com
-                        </p>
-                      </div>
-                    </div>
-                    <div className="d-flex gap-3 my-2 align-items-center">
-                      <div className="dash-product-img">
-                        <img src="res/assets/img/user/user-5.png" alt="" />
-                      </div>
-                      <div className="d-flex justify-content-between w-100">
-                        <div className="">
-                          <p className="m-0 comman-sm-text fw-medium">
-                            Peter Doe
-                          </p>
-                          <p className="m-0 comman-text-xs fw-light">
-                            20-20-2024
-                          </p>
-                        </div>
-                        <p className="comman-sm-text fw-semibold">
-                          Peter@gmail.com
-                        </p>
-                      </div>
-                    </div>
-                    <div className="d-flex gap-3 my-2 align-items-center">
-                      <div className="dash-product-img">
-                        <img src="res/assets/img/user/user-4.png" alt="" />
-                      </div>
-                      <div className="d-flex justify-content-between w-100">
-                        <div className="">
-                          <p className="m-0 comman-sm-text fw-medium">
-                            @Vibhu Shrivastav
-                          </p>
-                          <p className="m-0 comman-text-xs fw-light">
-                            20-20-2024
-                          </p>
-                        </div>
-                        <p className="comman-sm-text fw-semibold">
-                          vibhushrivastav@gmail.com
-                        </p>
-                      </div>
-                    </div>
-                    <div className="d-flex gap-3 my-2 align-items-center">
-                      <div className="dash-product-img">
-                        <img src="res/assets/img/user/user9.jpg" alt="" />
-                      </div>
-                      <div className="d-flex justify-content-between w-100">
-                        <div className="">
-                          <p className="m-0 comman-sm-text fw-medium">
-                            @Vibhu Shrivastav
-                          </p>
-                          <p className="m-0 comman-text-xs fw-light">
-                            20-20-2024
-                          </p>
-                        </div>
-                        <p className="comman-sm-text fw-semibold">
-                          vibhushrivastav@gmail.com
-                        </p>
-                      </div>
-                    </div>
+                    ))}
                   </div>
                 </div>
               </div>
@@ -438,114 +399,35 @@ const Dashboard = () => {
                     <h2 className="comman-card-heading">Recent Staff</h2>
                   </div>
                   <div className="comman-card-body">
-                    <div className="d-flex gap-3 my-2 align-items-center">
-                      <div className="dash-product-img">
-                        <img src="res/assets/img/user/user1.jpg" alt="" />
-                      </div>
-                      <div className="d-flex justify-content-between w-100">
-                        <div className="">
-                          <p className="m-0 comman-sm-text fw-medium">
-                            Jhon Doe
-                          </p>
-                          <p className="m-0 comman-text-xs fw-light">
-                            20-20-2024
+                  {staffListing?.map((itm, ids) => (
+                      <div className="d-flex gap-3 my-2 align-items-center">
+                        <div className="dash-product-img">
+                          <img
+                            src={
+                              itm?.profileImage?.length > 0
+                                ? itm?.profileImage
+                                : "res/assets/img/user/user-3.png"
+                            }
+                            alt=""
+                          />
+                        </div>
+                        <div className="d-flex justify-content-between w-100">
+                          <div className="">
+                            <p className="m-0 comman-sm-text fw-medium">
+                              {itm?.fullName ?? "Sub-Admin"}
+                            </p>
+                            <p className="m-0 comman-text-xs fw-light">
+                              {itm?.createdAt
+                                ?.slice(0, 10)
+                                ?.replaceAll("-", "/")}
+                            </p>
+                          </div>
+                          <p className="comman-sm-text fw-semibold">
+                            {itm?.email}
                           </p>
                         </div>
-                        <p className="comman-sm-text fw-semibold">
-                          jhondoe@gmail.com
-                        </p>
                       </div>
-                    </div>
-                    <div className="d-flex gap-3 my-2 align-items-center">
-                      <div className="dash-product-img">
-                        <img src="res/assets/img/user/user-3.png" alt="" />
-                      </div>
-                      <div className="d-flex justify-content-between w-100">
-                        <div className="">
-                          <p className="m-0 comman-sm-text fw-medium">
-                            Peter Doe
-                          </p>
-                          <p className="m-0 comman-text-xs fw-light">
-                            20-20-2024
-                          </p>
-                        </div>
-                        <p className="comman-sm-text fw-semibold">
-                          Peter@gmail.com
-                        </p>
-                      </div>
-                    </div>
-                    <div className="d-flex gap-3 my-2 align-items-center">
-                      <div className="dash-product-img">
-                        <img src="res/assets/img/user/user-5.png" alt="" />
-                      </div>
-                      <div className="d-flex justify-content-between w-100">
-                        <div className="">
-                          <p className="m-0 comman-sm-text fw-medium">
-                            Peter Doe
-                          </p>
-                          <p className="m-0 comman-text-xs fw-light">
-                            20-20-2024
-                          </p>
-                        </div>
-                        <p className="comman-sm-text fw-semibold">
-                          Peter@gmail.com
-                        </p>
-                      </div>
-                    </div>
-                    <div className="d-flex gap-3 my-2 align-items-center">
-                      <div className="dash-product-img">
-                        <img src="res/assets/img/user/user9.jpg" alt="" />
-                      </div>
-                      <div className="d-flex justify-content-between w-100">
-                        <div className="">
-                          <p className="m-0 comman-sm-text fw-medium">
-                            Peter Doe
-                          </p>
-                          <p className="m-0 comman-text-xs fw-light">
-                            20-20-2024
-                          </p>
-                        </div>
-                        <p className="comman-sm-text fw-semibold">
-                          Peter@gmail.com
-                        </p>
-                      </div>
-                    </div>
-                    <div className="d-flex gap-3 my-2 align-items-center">
-                      <div className="dash-product-img">
-                        <img src="res/assets/img/user/user-3.png" alt="" />
-                      </div>
-                      <div className="d-flex justify-content-between w-100">
-                        <div className="">
-                          <p className="m-0 comman-sm-text fw-medium">
-                            @Vibhu Shrivastav
-                          </p>
-                          <p className="m-0 comman-text-xs fw-light">
-                            20-20-2024
-                          </p>
-                        </div>
-                        <p className="comman-sm-text fw-semibold">
-                          vibhushrivastav@gmail.com
-                        </p>
-                      </div>
-                    </div>
-                    <div className="d-flex gap-3 my-2 align-items-center">
-                      <div className="dash-product-img">
-                        <img src="res/assets/img/user/user-5.png" alt="" />
-                      </div>
-                      <div className="d-flex justify-content-between w-100">
-                        <div className="">
-                          <p className="m-0 comman-sm-text fw-medium">
-                            @Vibhu Shrivastav
-                          </p>
-                          <p className="m-0 comman-text-xs fw-light">
-                            20-20-2024
-                          </p>
-                        </div>
-                        <p className="comman-sm-text fw-semibold">
-                          vibhushrivastav@gmail.com
-                        </p>
-                      </div>
-                    </div>
+                    ))}
                   </div>
                 </div>
               </div>

@@ -78,22 +78,15 @@ const AddSubAdmin = () => {
               <li className="breadcrumb-item active">
                 <a href="#">Staff Management</a>
               </li>
-              <li className="breadcrumb-item active">Add Sub-User</li>
+              <li className="breadcrumb-item active">Add Sub-Admin</li>
             </ol>
 
             <div className="mt-4 d-flex justify-content-between">
               <div className="">
-                <h1 className="main-heading m-0">Add Sub-User</h1>
+                <h1 className="main-heading m-0">Add Sub-Admin</h1>
               </div>
               <div className="d-flex gap-2">
-                <div className="d-flex gap-2">
-                  <a href="user_sub.html" className="comman-border-btn">
-                    <div className="d-flex gap-2 align-items-center">
-                      <i className="fa-solid fa-user" />
-                      Sub User
-                    </div>
-                  </a>
-                </div>
+               
                 <div className="d-flex gap-2">
                   <a className="comman-border-btn">
                     <div

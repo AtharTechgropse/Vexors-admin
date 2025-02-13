@@ -13,6 +13,7 @@ import CategoryManage from "./WebComponents/UserPanel/CategoryManagement/Categor
 import ProductManage from "./WebComponents/UserPanel/ProductManagement/ProductManage.jsx";
 import EditProfile from "./WebComponents/UserPanel/EditProfile.jsx";
 import AddSubAdmin from "./WebComponents/UserPanel/PeopleManage/AddSubAdmin.jsx";
+import ChatsManage from "./WebComponents/UserPanel/ChatManagement/ChatsManage.jsx";
 
 const Login = lazy(() => import("./WebComponents/Auths/Login.jsx"));
 const Forgot = lazy(() => import("./WebComponents/Auths/ForgotPassword.jsx"));
@@ -79,6 +80,7 @@ function App() {
             <Route path="/Notification" element={<PushNotify />} />
             <Route path="/category_management" element={<CategoryManage />} />
             <Route path="/product_management" element={<ProductManage />} />
+            <Route path="/chat_management" element={<ChatsManage />} />
             <Route path="/Users/View-User/:id" element={<ViewUserDetails />} />
             <Route path="/Users/Add-SubUsers" element={<AddSubUser />} />
             <Route path="/Users/Add-SubAdmin" element={<AddSubAdmin />} />

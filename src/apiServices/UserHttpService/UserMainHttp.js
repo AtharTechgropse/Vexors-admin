@@ -37,7 +37,7 @@ export async function getAdminData() {
 
 export async function GetAllUsers(formData) {
   try {
-    const { data } = await httpService.put(
+    const { data ,error } = await httpService.put(
       `${process.env.REACT_APP_APIENDPOINT}user/getUserList`,
       formData
     );
@@ -45,7 +45,7 @@ export async function GetAllUsers(formData) {
     } else {
       toast.error(data.message);
     }
-    return { data };
+    return { data,error };
   } catch (error) {
     handleError(error, "Internal error");
     return { error };
@@ -121,8 +121,8 @@ export async function ChangeUserStatus(id, formData) {
 
 export async function DeleteUser(id) {
   try {
-    const { data } = await httpService.post(
-      `${process.env.REACT_APP_APIENDPOINT}api/deleteUser/${id}`
+    const { data } = await httpService.delete(
+      `${process.env.REACT_APP_APIENDPOINT}user/deleteUser/${id}`
     );
     if (!data.error) {
       toast.success(data.message, { autoClose: 1500 });
@@ -159,6 +159,23 @@ export async function CreateSubAdmin(formData) {
     );
     if (!data.error) {
       toast.success(data.message, { autoClose: 1500 });
+    } else {
+      toast.error(data.message);
+    }
+    return { data };
+  } catch (error) {
+    handleError(error, "Internal error");
+    return { error };
+  }
+}
+
+export async function GetAllChats(formData) {
+  try {
+    const { data } = await httpService.put(
+      `${process.env.REACT_APP_APIENDPOINT}chat/getChatList`,
+      formData
+    );
+    if (!data.error) {
     } else {
       toast.error(data.message);
     }

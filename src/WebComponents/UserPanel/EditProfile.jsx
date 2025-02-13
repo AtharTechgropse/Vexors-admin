@@ -3,36 +3,50 @@ import { useForm } from "react-hook-form";
 import Header from "../common/Header";
 import Sidebar from "../common/Sidebar";
 import { useNavigate, useParams } from "react-router-dom";
-import { getAdminData, GetUser } from "../../apiServices/UserHttpService/UserMainHttp";
-import { UserEditProfile } from "../../apiServices/UserHttpService/UserLoginHttpService";
+import { getAdminData } from "../../apiServices/UserHttpService/UserMainHttp";
+import {
+  UserEditProfile,
+  changePasswordAdmin,
+} from "../../apiServices/UserHttpService/UserLoginHttpService";
+import { toast } from "react-toastify";
 
 const EditProfile = () => {
   const {
-    register,
-    handleSubmit,
-    reset,
-    formState: { errors },
+    register: profileRegister,
+    handleSubmit: handleProfileSubmit,
+    reset: resetProfile,
+    setValue: setProfileValue,
+    formState: { errors: profileErrors },
   } = useForm();
+
+  const {
+    register: passwordRegister,
+    handleSubmit: handlePasswordSubmit,
+    formState: { errors: passwordErrors },
+  } = useForm();
+
   const [user, setUser] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
   let { id } = useParams();
   const navigate = useNavigate();
 
   useEffect(() => {
-    GetApiData();
+    fetchUserData();
   }, []);
 
-  const GetApiData = async () => {
+  const fetchUserData = async () => {
     try {
       const { data, error } = await getAdminData();
       if (!error && data?.results) {
-        setUser(data.results.user);
-        setImagePreview(data.results.user.profileImage || "res/assets/img/user/user1.jpg");
-        reset({
-          name: data.results.user.name || "",
-          email: data.results.user.email || "",
-          mobile: data.results.user.mobile || "",
-          address: data.results.user.address || "",
+        const admin = data.results.admin;
+        setUser(admin);
+        setImagePreview(admin.profileImage || "res/assets/img/user/user1.jpg");
+
+        resetProfile({
+          name: admin.fullName || "",
+          email: admin.email || "",
+          mobile: admin.phoneNumber || "",
+          address: admin.address || "",
         });
       }
     } catch (error) {
@@ -40,24 +54,73 @@ const EditProfile = () => {
     }
   };
 
-  const onSubmit = async (formData) => {
+  const updateProfile = async (formData) => {
+    console.log(formData);
+    
     try {
-      const response = await UserEditProfile(id, formData);
-      if (response?.success) {
-        alert("Profile updated successfully!");
-        GetApiData(); // Refresh data after update
+      let profilePayload = new FormData();
+
+      profilePayload.append("fullName", formData.name);
+      profilePayload.append("address", formData.address);
+      profilePayload.append("email", formData.email);
+      profilePayload.append("phoneNumber", formData.mobile);
+      profilePayload.append("countryCode", "+966");
+      if (formData.imageData) {
+        profilePayload.append("profileImage", formData.imageData);
+      }
+
+      const { data: response } = await UserEditProfile(profilePayload);
+      if (!response?.data?.error) {
+        toast.success("Profile updated successfully!");
+        fetchUserData();
+        navigate("/")
       }
     } catch (error) {
       console.error("Error updating profile:", error);
     }
   };
 
+  const updatePassword = async (formData) => {
+    if (!formData.oldPassword) {
+      toast.error("Please enter your old password.");
+      return;
+    }
+    if (formData.password !== formData.confirmPassword) {
+      toast.error("Passwords do not match!");
+      return;
+    }
+
+    try {
+      let passwordPayload = {
+        password: formData.oldPassword,
+        newPassword: formData.password,
+      };
+
+      const { data: passwordResponse } = await changePasswordAdmin(
+        passwordPayload
+      );
+      if (!passwordResponse?.success) {
+        toast.error("Error changing password!");
+        return;
+      }
+      toast.success("Password updated successfully!");
+    } catch (error) {
+      console.error("Error changing password:", error);
+    }
+  };
+
   const handleImageUpload = (event) => {
     const file = event.target.files[0];
     if (file) {
+      const allowedTypes = ["image/jpeg", "image/png", "image/jpg"];
+      if (!allowedTypes.includes(file.type)) {
+        toast.error("Only JPG, JPEG, and PNG formats are allowed.");
+        return;
+      }
       const reader = new FileReader();
       reader.onloadend = () => {
         setImagePreview(reader.result);
+        setProfileValue("imageData", file);
       };
       reader.readAsDataURL(file);
     }
@@ -72,18 +135,25 @@ const EditProfile = () => {
           <div className="animate__animated animate__fadeInUp animate__faster">
             <div className="comman-design">
               <div className="form-design">
-                <form onSubmit={handleSubmit(onSubmit)}>
+                {/* PROFILE UPDATE FORM */}
+                <h3>Update Profile</h3>
+                <form onSubmit={handleProfileSubmit(updateProfile)}>
                   <div className="profile-img-container text-center mb-4">
-                    <label htmlFor="profileImage" className="profile-img-wrapper">
+                    <label
+                      htmlFor="profileImage"
+                      className="profile-img-wrapper"
+                    >
                       <input
                         type="file"
                         id="profileImage"
                         className="d-none"
                         accept="image/*"
-                        onChange={handleImageUpload}
+                        {...profileRegister("imageData", {
+                          onChange: (e) => handleImageUpload(e),
+                        })}
                       />
                       <img
-                        src={imagePreview ?? "res/assets/img/user/user1.jpg"}
+                        src={imagePreview}
                         className="profile-img"
                         alt="Profile"
                       />
@@ -96,74 +166,118 @@ const EditProfile = () => {
                   <div className="row">
                     <div className="col-md-6">
                       <div className="form-group">
-                        <label className="form-label">Name</label>
+                        <label>Name</label>
                         <input
                           type="text"
                           className="form-control"
-                          {...register("name", { required: "Name is required" })}
-                        />
-                        {errors.name && <span className="error-boundary">{errors.name.message}</span>}
-                      </div>
-                    </div>
-                    <div className="col-md-6">
-                      <div className="form-group">
-                        <label className="form-label">Email</label>
-                        <input
-                          type="email"
-                          className="form-control"
-                          {...register("email", {
-                            required: "Email is required",
-                            pattern: { value: /^\S+@\S+$/i, message: "Invalid email" },
+                          {...profileRegister("name", {
+                            required: "Name is required",
                           })}
                         />
-                        {errors.email && <span className="error-boundary">{errors.email.message}</span>}
+                        {profileErrors.name && (
+                          <span className="error-boundary">
+                            {profileErrors.name.message}
+                          </span>
+                        )}
                       </div>
                     </div>
+
+
                     <div className="col-md-6">
                       <div className="form-group">
-                        <label className="form-label">Mobile no.</label>
+                        <label>Email</label>
+                        <input
+                          disabled
+                          type="email"
+                          className="form-control"
+                          {...profileRegister("email", {
+                            required: "Email is required",
+                          })}
+                        />
+                        {profileErrors.email && (
+                          <span className="error-boundary">
+                            {profileErrors.email.message}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="col-md-6">
+                      <div className="form-group">
+                        <label>Mobile No.</label>
                         <input
                           type="text"
                           className="form-control"
-                          {...register("mobile", { required: "Mobile number is required" })}
+                          {...profileRegister("mobile", {
+                            required: "Mobile is required",
+                          })}
                         />
-                        {errors.mobile && <span className="error-boundary">{errors.mobile.message}</span>}
+                        {profileErrors.mobile && (
+                          <span className="error-boundary">
+                            {profileErrors.mobile.message}
+                          </span>
+                        )}
                       </div>
                     </div>
+
                     <div className="col-md-6">
                       <div className="form-group">
-                        <label className="form-label">Address</label>
-                        <input
-                          type="text"
+                        <label>Address</label>
+                        <textarea
                           className="form-control"
-                          {...register("address", { required: "Address is required" })}
-                        />
-                        {errors.address && <span className="error-boundary">{errors.address.message}</span>}
+                          {...profileRegister("address", {
+                            required: "Address is required",
+                          })}
+                        ></textarea>
+                        {profileErrors.address && (
+                          <span className="error-boundary">
+                            {profileErrors.address.message}
+                          </span>
+                        )}
                       </div>
                     </div>
                   </div>
-                  <div className="mt-4 border-top">
-                    <div className="row mt-4">
-                      <div className="col-md-4 position-relative">
-                        <label className="form-label">Password</label>
-                        <input type="password" placeholder="*******" className="form-control" {...register("password")} />
-                        <i className="fa fa-eye-slash password-hide" />
-                      </div>
-                      <div className="col-md-4 position-relative">
-                        <label className="form-label">Change Password</label>
-                        <input type="password" placeholder="*******" className="form-control" {...register("newPassword")} />
-                        <i className="fa fa-eye-slash password-hide" />
-                      </div>
-                      <div className="col-md-4 position-relative">
-                        <label className="form-label">Confirm Password</label>
-                        <input type="password" placeholder="*******" className="form-control" {...register("confirmPassword")} />
-                        <i className="fa fa-eye-slash password-hide" />
-                      </div>
-                      <div className="col-12 mt-4">
-                        <button type="submit" className="comman-btn">Save Changes</button>
-                      </div>
+
+                  <button type="submit" className="comman-btn">
+                    Save Changes
+                  </button>
+                </form>
+
+                <hr className="my-4" />
+                <h3>Change Password</h3>
+                <form onSubmit={handlePasswordSubmit(updatePassword)}>
+                  <div className="row">
+                    <div className="col-md-6">
+                      <label>Old Password</label>
+                      <input
+                        type="password"
+                        className="form-control"
+                        {...passwordRegister("oldPassword")}
+                      />
+                    </div>
+
+                    <div className="col-md-6">
+                      <label>New Password</label>
+                      <input
+                        type="password"
+                        className="form-control"
+                        {...passwordRegister("password")}
+                      />
+                    </div>
+
+                    <div className="col-md-6">
+                      <label>Confirm Password</label>
+                      <input
+                        type="password"
+                        className="form-control"
+                        {...passwordRegister("confirmPassword")}
+                      />
                     </div>
                   </div>
+
+                  <button type="submit" className="comman-btn mt-2">
+                    Update Password
+                  </button>
                 </form>
               </div>
             </div>

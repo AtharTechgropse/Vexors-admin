@@ -26,7 +26,8 @@ function OTPVerify() {
 
     setTimeout(() => {
       setLoader(false);
-    }, 6000);
+      setValue("")
+    }, 4000);
 
     try {
       let formData = {
